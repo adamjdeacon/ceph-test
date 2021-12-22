@@ -1,5 +1,26 @@
-- name: Test write 2
-  file:
-    path: /important2
-    mode: 0644
-    state: absent
+- name: Create SSH config
+  template:
+    src: ssh_config
+    dest: /home/cephuser/.ssh/config
+    owner: cephuser
+    group: cephuser
+    mode: 0600
+
+- name: Copy keys
+  copy:
+    src: files/{{ item }}
+    dest: /home/cephuser/.ssh/{{ item }}
+    owner: cephuser
+    group: cephuser
+    mode: 0600
+  with_items:
+    - id_rsa
+    - id_rsa.pub
+
+- name: known_hosts
+  copy:
+    src: files/known_hosts
+    dest: /home/cephuser/.ssh/known_hosts
+    owner: cephuser
+    group: cephuser
+    mode: 0600

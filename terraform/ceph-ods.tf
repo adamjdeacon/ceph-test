@@ -1,5 +1,5 @@
-resource "google_compute_instance" "ceph-ods" {
-  name                      = "ceph-ods-${count.index + 1}"
+resource "google_compute_instance" "ceph-osd" {
+  name                      = "osd${count.index + 1}"
   machine_type              = "n1-standard-2"
   count                     = var.node_count
   allow_stopping_for_update = true
@@ -25,7 +25,7 @@ resource "google_compute_instance" "ceph-ods" {
     network = "default"
 
     access_config {
-      nat_ip = google_compute_address.ods[count.index].address
+      nat_ip = google_compute_address.osd[count.index].address
     }
   }
     lifecycle {
@@ -33,20 +33,20 @@ resource "google_compute_instance" "ceph-ods" {
   }
 }
 
-resource "google_compute_disk" "ods-disks" {
-  name  = "ods-disk-${count.index + 1}"
+resource "google_compute_disk" "osd-disks" {
+  name  = "osd-disk-${count.index + 1}"
   type  = "pd-standard"
   count = var.node_count
   size  = "100"
 }
 
-resource "google_compute_attached_disk" "ods" {
-  disk     = google_compute_disk.ods-disks[count.index].id
-  instance = google_compute_instance.ceph-ods[count.index].id
+resource "google_compute_attached_disk" "osd" {
+  disk     = google_compute_disk.osd-disks[count.index].id
+  instance = google_compute_instance.ceph-osd[count.index].id
   count = var.node_count
 }
 
-resource "google_compute_address" "ods" {
-  name = "ods-${count.index + 1}"
+resource "google_compute_address" "osd" {
+  name = "osd-${count.index + 1}"
   count = var.node_count
 }

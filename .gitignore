@@ -30,4 +30,4 @@ override.tf.json
 
 terraform/keys
 
-roles/admin/files/id_rsa*
+ansible/roles/admin/files/id_rsa*
