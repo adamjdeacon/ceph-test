@@ -1,0 +1,62 @@
+- name: Create User
+  user:
+    name: cephuser
+    comment: Ceph User
+    create_home: true
+
+- name: add cephuser to sudoers
+  template:
+    src: templates/cephuser.sudoers
+    dest: /etc/sudoers.d/cephuser
+    mode: 0440
+    owner: root
+    group: root
+    validate: visudo -cf %s
+
+- name: disable SELinux
+  selinux:
+    policy: targeted
+    state: permissive
+
+# - name: debug
+#   debug:
+#     msg: "{{ hostvars[item]['ansible_all_ipv4_addresses'] }}"
+#     #ansible_all_ipv4_addresses
+#   with_items: "{{groups['servers']}}"
+#   tags:
+#     - debug
+
+- name: Update the /etc/hosts file with node name
+  lineinfile:
+    path: "/etc/hosts"
+    regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+    line: "{{ hostvars[item]['ansible_all_ipv4_addresses'][0] }}\t\t{{ hostvars[item]['ansible_hostname']}}"
+    state: present
+  with_items: "{{groups['servers']}}"
+  tags:
+   - etchostsupdate
+
+- name: scan and register  
+  command: "ssh-keyscan {{ansible_host|default(inventory_hostname)}}"  
+  register: "host_keys"  
+  changed_when: false  
+  tags:
+    - debug
+    - scan
+
+- name: debug
+  debug:
+    msg: "{{ host_keys }}"
+  #with_items:
+  #  "{{ host_keys.stdout }}"
+  tags:
+    - debug
+
+# - name: Add Known Hosts
+  # known_hosts:  
+    # name: "{{ item.split(' ')[0] }}"
+    # key: "{{ item }}"
+    # path: /etc/ssh/ssh_known_hosts
+  # with_items: "{{ host_keys.stdout }}"
+  # tags:
+    # - debug

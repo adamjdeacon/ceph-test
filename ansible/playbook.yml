@@ -1,0 +1,12 @@
+---
+- name: Common Setup
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: admin
+  hosts: admin
+  become: true
+  roles:
+    - admin

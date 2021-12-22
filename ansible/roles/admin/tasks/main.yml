@@ -1,0 +1,5 @@
+- name: Test write 2
+  file:
+    path: /important2
+    mode: 0644
+    state: absent
