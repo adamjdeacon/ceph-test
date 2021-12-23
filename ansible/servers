@@ -1,9 +1,9 @@
 [servers]
-ceph-admin ansible_host=35.246.32.77
-mon1 ansible_host=34.89.19.203
+ceph-admin ansible_host=35.246.105.244
+mon1 ansible_host=34.105.157.24
 osd1 ansible_host=34.105.194.185
-osd2 ansible_host=35.246.105.244
-osd3 ansible_host=34.105.138.18
+osd2 ansible_host=34.142.76.115
+osd3 ansible_host=35.246.122.49
 
 [osd]
 osd1
