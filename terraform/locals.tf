@@ -28,6 +28,7 @@ locals {
     "artifactregistry.googleapis.com"
   ]
 
+  machine_type = local.is_production ? "n1-standard-4" : "f1-micro"
   default_image           = "centos-cloud/centos-stream-9"
   compute_service_account = "${module.project.project_number}-compute@developer.gserviceaccount.com"
   node_count              = 3

@@ -1,6 +1,6 @@
 resource "google_compute_instance" "ceph-osd" {
   name                      = "osd${count.index + 1}"
-  machine_type              = "n1-standard-2"
+  machine_type              = local.machine_type
   count                     = local.node_count
   allow_stopping_for_update = true
   #tags                      = ["http-server", "https-server"]

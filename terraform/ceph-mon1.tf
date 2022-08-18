@@ -1,6 +1,6 @@
 resource "google_compute_instance" "ceph-mon1" {
   name                      = "mon1"
-  machine_type              = "n1-standard-2"
+  machine_type              = local.machine_type
   allow_stopping_for_update = true
   #tags                      = ["http-server", "https-server"]
   labels = {
