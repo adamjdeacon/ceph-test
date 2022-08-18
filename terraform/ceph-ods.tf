@@ -1,7 +1,7 @@
 resource "google_compute_instance" "ceph-osd" {
   name                      = "osd${count.index + 1}"
   machine_type              = "n1-standard-2"
-  count                     = var.node_count
+  count                     = local.node_count
   allow_stopping_for_update = true
   #tags                      = ["http-server", "https-server"]
   labels = {
@@ -9,13 +9,13 @@ resource "google_compute_instance" "ceph-osd" {
     patch     = "true"
   }
   service_account {
-    email = var.compute_service_account
+    email = local.compute_service_account
     # scopes from https://cloud.google.com/sdk/gcloud/reference/alpha/compute/instances/set-scopes#--scopes
     scopes = ["logging-write", "monitoring-write", "pubsub", "service-control", "service-management", "storage-ro", "https://www.googleapis.com/auth/trace.append"]
   }
   boot_disk {
     initialize_params {
-      image = "centos-cloud/centos-8"
+      image = local.default_image
       size  = 20
       type  = "pd-standard"
     }
@@ -36,17 +36,17 @@ resource "google_compute_instance" "ceph-osd" {
 resource "google_compute_disk" "osd-disks" {
   name  = "osd-disk-${count.index + 1}"
   type  = "pd-standard"
-  count = var.node_count
+  count = local.node_count
   size  = "100"
 }
 
 resource "google_compute_attached_disk" "osd" {
   disk     = google_compute_disk.osd-disks[count.index].id
   instance = google_compute_instance.ceph-osd[count.index].id
-  count = var.node_count
+  count = local.node_count
 }
 
 resource "google_compute_address" "osd" {
   name = "osd-${count.index + 1}"
-  count = var.node_count
+  count = local.node_count
 }

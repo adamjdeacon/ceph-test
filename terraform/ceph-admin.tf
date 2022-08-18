@@ -8,13 +8,13 @@ resource "google_compute_instance" "ceph-admin" {
     patch     = "true"
   }
   service_account {
-    email = var.compute_service_account
+    email = local.compute_service_account
     # scopes from https://cloud.google.com/sdk/gcloud/reference/alpha/compute/instances/set-scopes#--scopes
     scopes = ["logging-write", "monitoring-write", "pubsub", "service-control", "service-management", "storage-ro", "https://www.googleapis.com/auth/trace.append"]
   }
   boot_disk {
     initialize_params {
-      image = "centos-cloud/centos-8"
+      image = local.default_image
       size  = 20
       type  = "pd-standard"
     }
